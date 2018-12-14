@@ -5,6 +5,7 @@ import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.security.SecureRandom;
 import java.util.Base64;
 
 import javax.crypto.BadPaddingException;
@@ -22,8 +23,8 @@ public final class AESEncryptor {
 
     private static final String CHARSET = "UTF-8";
 
-    private static final String HASH_ALGORITHM = "MD5";
-    private static final String AES_MODE = "AES/CBC/PKCS5Padding";
+    private static final String HASH_ALGORITHM = "SHA-256";
+    private static final String AES_MODE = "AES/GCM/NoPadding";
 
 
     private static byte[] iv = {0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00};
@@ -34,6 +35,16 @@ public final class AESEncryptor {
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
         }
+    }
+    // TODO RANDOM SECRET KEY
+
+    public static byte[] generateIV(){
+        // Generating IV.
+        int ivSize = 16;
+        byte[] iv = new byte[ivSize];
+        SecureRandom random = new SecureRandom();
+        random.nextBytes(iv);
+        return iv;
     }
 
     public static String encrypt(String key, String message) {
@@ -89,6 +100,7 @@ public final class AESEncryptor {
 
     private static SecretKeySpec generateKeySpec(final String key) throws NoSuchAlgorithmException, UnsupportedEncodingException {
         final MessageDigest digest = MessageDigest.getInstance(HASH_ALGORITHM);
+        // TODO ADD SALT
         digest.update(key.getBytes(CHARSET));
         byte[] keyBytes = digest.digest();
         return new SecretKeySpec(keyBytes, "AES");

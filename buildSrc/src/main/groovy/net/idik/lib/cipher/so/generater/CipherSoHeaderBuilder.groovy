@@ -35,6 +35,7 @@ class CipherSoHeaderBuilder {
         lines.add("#define SIGNATURE \"${signature}\"\n")
 
         lines.add("#define SECRET_KEY \"$secretKey\" \n\n")
+        // TODO DECLARE IV
 
         lines.add("#define LOAD_MAP(_map) \\\n")
         keys.each {
